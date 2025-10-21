@@ -52,32 +52,49 @@ The AI Time-Block Scheduler combines **Generative AI reasoning** (Gemini API) wi
 
 ## Project Structure
 ```
-app/
- └─ api/
-     └─ schedule/
-         └─ route.ts              # Core API route (Gemini API + local fallback planner)
+timecraft/
+ ├─ public/
+ │   └─ favicon.ico
+ ├─ src/
+ │   ├─ app/
+ │   │   ├─ api/
+ │   │   │   ├─ ics/
+ │   │   │   │   └─ route.ts          # ICS feed endpoint (exports .ics)
+ │   │   │   ├─ refine/
+ │   │   │   │   └─ route.ts          # (Optional) refine/rehydrate endpoint
+ │   │   │   └─ schedule/
+ │   │   │       └─ route.ts          # Core scheduler API (Gemini + localPlan fallback)
+ │   │   ├─ globals.css               # Tailwind/global styles
+ │   │   ├─ layout.tsx                # Next.js root layout
+ │   │   └─ page.tsx                  # App home page (form + timeline shell)
+ │   │
+ │   ├─ components/
+ │   │   ├─ AnchorList.tsx            # UI list for fixed anchors (lectures/meetings)
+ │   │   ├─ AvailabilityPicker.tsx    # Availability window inputs
+ │   │   ├─ Loader.tsx                # Small loading indicator
+ │   │   ├─ PreferencesCard.tsx       # Focus/break/gap settings UI
+ │   │   ├─ RefineBar.tsx             # “Generate / Download” action bar
+ │   │   ├─ TaskInputList.tsx         # Task rows (title, minutes, priority)
+ │   │   ├─ Timeline.tsx              # Calendar timeline (dynamic hours fix lives here)
+ │   │   └─ UnplacedPanel.tsx         # Shows tasks that couldn’t be scheduled
+ │   │
+ │   └─ lib/
+ │       ├─ gemini.ts                 # Gemini API helper (JSON generation)
+ │       ├─ ics.ts                    # Build .ics from plan events
+ │       ├─ prompt.ts                 # System prompt + few-shot examples
+ │       └─ schema.ts                 # Zod schemas (ScheduleRequest, Plan)
+ │
+ ├─ .env.local                       
+ ├─ .gitignore
+ ├─ eslint.config.mjs
+ ├─ next-env.d.ts
+ ├─ next.config.ts
+ ├─ postcss.config.mjs
+ ├─ package.json
+ ├─ package-lock.json
+ ├─ tsconfig.json
+ └─ README.md
 
-lib/
- ├─ schema.ts                     # Zod validation for Plan and ScheduleRequest
- ├─ prompt.ts                     # System + few-shot prompt definitions
- ├─ gemini.ts                     # Gemini API helper (JSON generation + parsing)
- └─ utils.ts                      # Misc. helper functions (if any)
-
-components/
- ├─ HeroTemplate.tsx              # Header + summary text
- ├─ ScheduleView.tsx              # Calendar / timeline view
- ├─ HomeSections.tsx              # Wrapper for home page content
- └─ Forms/
-     ├─ TaskForm.tsx              # Task input form
-     ├─ AnchorForm.tsx            # Fixed meetings input form
-     ├─ AvailabilityForm.tsx      # Availability input form
-     └─ PreferencesForm.tsx       # Focus, break, and limit settings
-
-styles/
- └─ globals.css                   # Tailwind / global styling
-
-public/
- └─ favicon.ico                   # App icon
 ```
 ## How It Works
 1. **User Input → API:** User enters tasks, anchors, and preferences.  
